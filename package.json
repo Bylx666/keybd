@@ -1,0 +1,26 @@
+{
+  "name": "keybd",
+  "version": "1.0.0",
+  "description": "JavaScript 端 Key Binary Document 数据解析与生成",
+  "main": "src/index",
+  "scripts": {
+    "test": "node test/test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bylx666/keybd.git"
+  },
+  "keywords": [
+    "kbd",
+    "json",
+    "binary",
+    "parser",
+    "Subkey"
+  ],
+  "author": "Subkey",
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/Bylx666/keybd/issues"
+  },
+  "homepage": "https://github.com/Bylx666/keybd#readme"
+}
