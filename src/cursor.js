@@ -42,7 +42,6 @@ class Parser {
     vint() {
         let n = this.u8();
         let len = n >>> 6;
-        console.log(len);
         n &= 0x3F;
         if (len) {
             n |= this.u8() << 6;

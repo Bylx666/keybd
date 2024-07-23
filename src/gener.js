@@ -1,23 +1,45 @@
 const { Gener } = require("./cursor");
 const constants = require("./constants");
 
-function generObject(gener, obj) {
-
+function generArray(gener, array) {
+    gener.u8(constants.ARRAY);
+    gener.vint(array.length);
+    for (let item of array) generValue(gener, item);
 }
 
-function generArray(gener, array) {
+function generObject(gener, obj) {
+    gener.u8(constants.OBJECT);
+    let keys = Object.keys(obj);
+    gener.vint(keys.length);
+    for (let key of keys) {
+        generVStr(gener, key);
+        generValue(gener, obj[key]);
+    }
+}
 
+function generVStr(gener, str) {
+    let buf = gener.encoder.encode(str);
+    gener.u8(buf.byteLength);
+    gener.write(buf);
 }
 
 function generValue(gener, any) {
     switch (any) {
-        case null: case undefined: return gener.u8(constants.NUL);
+        case null: case undefined: 
+            return gener.u8(constants.NUL);
     }
-    var str;
+
+    if (any instanceof ArrayBuffer) any = new Uint8Array(any);
+    if (any instanceof Uint8Array) {
+        gener.u8(constants.BUFFER);
+        gener.vint(any.byteLength);
+        return gener.write(any);
+    }
+
     switch (typeof any) {
         case "number": 
             gener.u8(constants.NUMBER);
-            str = String(any);
+            let str = String(any);
             gener.u8(str.length);
             gener.str(str);
             break;
@@ -26,7 +48,7 @@ function generValue(gener, any) {
             break;
         case "string": 
             gener.u8(constants.STRING);
-            // gener.
+            generVStr(gener, any);
             break;
         case "object":
             Array.isArray(any)? 
@@ -49,7 +71,8 @@ function generTyped(gener, ty, val) {
     
 }
 
-module.exports = src=> {
-    let gener = new Gener(src);
-    
+module.exports = value=> {
+    let gener = new Gener(4);
+    generValue(gener, value);
+    return gener.export();
 };

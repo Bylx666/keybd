@@ -1,11 +1,11 @@
 
-const { Gener, Parser } = require("./cursor");
+const parse = require("./parse");
+const gener = require("./gener");
 
-let g = new Gener();
-g.vint(2**30);
-let p = new Parser(g.export());
-console.log(p.buf);
-console.log(p.vint());
+let buf = gener({
+    b: 632526.000000001
+});
+console.log(buf, parse(buf));
 
 module.exports = ()=> {
 };
