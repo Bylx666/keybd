@@ -15,30 +15,6 @@ class Parser {
         this.i += 1;
         return this.view.getInt8(this.i - 1);
     }
-    u16() {
-        this.i += 2;
-        return this.view.getUint16(this.i - 2);
-    }
-    i16() {
-        this.i += 2;
-        return this.view.getInt16(this.i - 2);
-    }
-    u32() {
-        this.i += 4;
-        return this.view.getUint32(this.i - 4);
-    }
-    i32() {
-        this.i += 4;
-        return this.view.getInt32(this.i - 4);
-    }
-    f32() {
-        this.i += 4;
-        return this.view.getFloat32(this.i - 4);
-    }
-    f64() {
-        this.i += 8;
-        return this.view.getFloat64(this.i - 8);
-    }
     vint() {
         let n = this.u8();
         let len = n >>> 6;
@@ -49,12 +25,6 @@ class Parser {
                 n |= this.u8() << i * 8 + 6;
         }
         return n;
-    }
-    skip(n) {
-        this.i += n;
-    }
-    skipTo(n) {
-        this.i = n;
     }
     read(n) {
         this.i += n;
@@ -85,30 +55,6 @@ class Gener {
         this.go(1);
         this.view.setUint8(this.i - 1, n);
     }
-    i8(n) {
-        this.go(1);
-        this.view.setInt8(this.i - 1, n);
-    }
-    u16(n) {
-        this.go(2);
-        this.view.setUint16(this.i - 2, n);
-    }
-    i16(n) {
-        this.go(2);
-        this.view.setInt16(this.i - 2, n);
-    }
-    u32(n) {
-        this.go(4);
-        this.view.setUint32(this.i - 4, n);
-    }
-    i32(n) {
-        this.go(4);
-        this.view.setInt32(this.i - 4, n);
-    }
-    f64(n) {
-        this.go(8);
-        this.view.setFloat64(this.i - 8, n);
-    }
     vint(n) {
         let bytes = [n & 0x3F];
         n >>>= 6;
@@ -117,7 +63,7 @@ class Gener {
             n >>>= 8;
         }
         if (n > 0) bytes.push(n);
-        if (bytes.length > 4) throw new TypeError("数字超过2**30 - 1");
+        // if (bytes.length > 4) throw new TypeError("数字超过2**30 - 1");
         bytes[0] |= (bytes.length - 1) << 6;
         this.write(bytes);
     }
@@ -127,16 +73,6 @@ class Gener {
     }
     str(str) {
         return this.write(this.encoder.encode(str));
-    }
-    markSize() {
-        let that = this;
-        that.go(4);
-        let i = that.i;
-        return { i, end() {
-            let len = that.i - i;
-            that.view.setUint32(i - 4, len);
-            return len;
-        } }
     }
     export() {
         return this.buf.subarray(0, this.i);

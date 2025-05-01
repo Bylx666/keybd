@@ -19,7 +19,7 @@ function generObject(gener, obj) {
 
 function generVStr(gener, str) {
     let buf = gener.encoder.encode(str);
-    gener.u8(buf.byteLength);
+    gener.vint(buf.byteLength);
     gener.write(buf);
 }
 
@@ -55,20 +55,10 @@ function generValue(gener, any) {
                 generArray(gener, any):
                 generObject(gener, any);
             break;
-        case "function": // TODO
-        case "symbol": case "bigint": 
-            throw new TypeError("不可输入Symbol和Bigint类型");
+        // case "function": // TODO
+        // case "symbol": case "bigint": 
+            // throw new TypeError("不可输入Symbol和Bigint类型");
     }
-}
-
-function generTyped(gener, ty, val) {
-    switch (any) {
-        case null: case undefined: 
-            if (!mayNull) throw new TypeError("非空检查失败");
-
-        // case NaN: case Infinity: 
-    }
-    
 }
 
 module.exports = value=> {

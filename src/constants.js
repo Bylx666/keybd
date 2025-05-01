@@ -1,5 +1,4 @@
 module.exports = {
-    HEADER: new TextEncoder().encode("KyBD"),
     NUL   : 0b00000000,
     NUMBER: 0b00000001,
     FALSE : 0b00000010,
